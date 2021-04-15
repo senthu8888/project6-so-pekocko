@@ -18,6 +18,7 @@ exports.createSauce = (req, res, next) => {
 exports.getOneSauce = (req, res, next) => {
 	Sauce.findOne({ _id: req.params.id })
 		.then((sauce) => {
+			console.log("Propriétaire de la sauce " + sauce.userId);
 			res.status(200).json(sauce);
 		})
 		.catch((error) => {
@@ -38,9 +39,13 @@ exports.modifySauce = (req, res, next) => {
 				imageUrl: `${req.protocol}://${req.get("host")}/images/${req.file.filename}`,
 		  }
 		: { ...req.body };
-	Sauce.updateOne({ _id: req.params.id }, { ...sauceObject, _id: req.params.id })
-		.then(() => res.status(200).json({ message: "Votre sauce est modifié !" }))
-		.catch((error) => res.status(400).json({ error }));
+	if (req.params.id !== req.body.userId) {
+		Sauce.updateOne({ _id: req.params.id }, { ...sauceObject, _id: req.params.id })
+			.then(() => res.status(200).json({ message: "Votre sauce est modifié !" }))
+			.catch((error) => res.status(400).json({ error }));
+	} else {
+		res.status(404).json({ message: "pas d'accès !" });
+	}
 };
 
 exports.deleteSauce = (req, res, next) => {
@@ -62,9 +67,7 @@ exports.getAllSauce = (req, res, next) => {
 			res.status(200).json(sauces);
 		})
 		.catch((error) => {
-			res.status(400).json({
-				error: error,
-			});
+			res.status(400).json({ error });
 		});
 };
 
