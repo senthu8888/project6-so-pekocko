@@ -25,41 +25,11 @@ app.use((req, res, next) => {
 	next();
 });
 
-app.get("/", (req, res) => {
-	res.send("Bienvenue à So Pekocko");
-});
-
-app.get("/api/auth/login", (req, res) => {
-	res.send("Accès interdit");
-});
-
-// app.put("/api/sauces/:id", (req, res) => {
-// 	res.send("Accès interdit");
-// 	console.log("Accès interdit");
-// });
-
-app.put("/api/sauces", (req, res) => {
-	res.send("Accès refusé");
-});
-
-// app.get("/api/sauces", (req, res) => {
-// 	res.send("Accès refusé");
-// });
-
-// app.use(setUser);
-
-// function setUser(req, res, next) {
-// 	const userId = req.body.userId;
-// 	if (userId) {
-// 		req.user = user.find((user) => user.id === userId);
-// 	}
-// 	next();
-// }
 app.use(bodyParser.json());
+app.use("/images", express.static(path.join(__dirname, "images")));
+app.use(helmet());
 
 app.use("/api/sauces", sauceRoutes);
 app.use("/api/auth", userRoutes);
-app.use("/images", express.static(path.join(__dirname, "images")));
-app.use(helmet());
 
 module.exports = app;
